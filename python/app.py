@@ -11,6 +11,9 @@ MODEL_URL = 'https://storage.googleapis.com/mediapipe-models/hand_landmarker/han
 def main():
     p = argparse.ArgumentParser()
     p.add_argument('--camera',type=int,default=0)
+    p.add_argument('--video',help='Read a phone-recorded video instead of a webcam')
+    p.add_argument('--no-udp',action='store_true',help='Inspect recognition without sending game input')
+    p.add_argument('--no-preview',action='store_true',help='Run without the video window')
     p.add_argument('--host',default='127.0.0.1')
     p.add_argument('--port',type=int,default=5055)
     p.add_argument('--record',help='Save one labelled trial as JSONL (landmarks, no video)')
@@ -33,13 +36,22 @@ def main():
         running_mode=mp.tasks.vision.RunningMode.VIDEO,num_hands=2,
         min_hand_detection_confidence=0.6,min_hand_presence_confidence=0.6,
         min_tracking_confidence=0.6)
-    cap = cv2.VideoCapture(args.camera)
+    if args.video and not Path(args.video).is_file():
+        p.error('Video file not found: '+args.video)
+    cap = cv2.VideoCapture(args.video if args.video else args.camera)
     if not cap.isOpened():
-        raise RuntimeError('Camera unavailable. Check permission or try --camera 1.')
-    sender, recognizer = Sender(args.host,args.port), Recognizer()
+        cap.release()
+        raise RuntimeError('Input unavailable. Check video format or camera permission.')
+    fps=cap.get(cv2.CAP_PROP_FPS)
+    if args.video and not (1 <= fps <= 240):
+        cap.release()
+        raise RuntimeError('Video frame rate unavailable. Export the clip as constant-rate MP4.')
+    sender, recognizer = (None if args.no_udp else Sender(args.host,args.port)), Recognizer()
     output = None
     start = time.monotonic()
     last_ms, display, display_until = -1,'NONE',0
+    frame_index, last_status, last_log = 0,None,-100
+    print('INPUT: '+(args.video or f'camera {args.camera}')+' | Q: quit',flush=True)
     try:
         if args.record:
             path = Path(args.record)
@@ -49,9 +61,13 @@ def main():
             while True:
                 ok, frame = cap.read()
                 if not ok:
+                    if args.video:
+                        print('Video finished.',flush=True)
+                        break
                     raise RuntimeError('Camera frame read failed.')
                 now = time.monotonic()
-                t = now-start
+                t = frame_index/fps if args.video else now-start
+                frame_index+=1
                 timestamp = max(last_ms+1,int(t*1000))
                 last_ms = timestamp
                 rgb = cv2.cvtColor(frame,cv2.COLOR_BGR2RGB)
@@ -62,10 +78,14 @@ def main():
                 aspect = frame.shape[1]/frame.shape[0]
                 hands = [hand_features(hand,aspect) for hand in landmarks]
                 event = recognizer.update(t,hands)
-                sender.send(event,len(hands))
+                if sender: sender.send(event,len(hands))
+                status=(len(hands),tuple(h.pose for h in sorted(hands,key=lambda h:h.x)))
+                if status!=last_status or t-last_log>=1 or event!='NONE':
+                    poses='/'.join(status[1]) or '-'
+                    print(f'{t:7.2f}s | hands={len(hands)} | pose={poses:12} | event={event:5} | infer={inference_ms:.1f}ms',flush=True)
+                    last_status,last_log=status,t
                 if event!='NONE':
                     display,display_until = event,t+0.8
-                    print(f'{t:.2f}s {event}')
                 if output:
                     output.write(json.dumps(dict(t=t, label=args.label, subject=args.subject,
                         condition=args.condition, aspect=aspect, landmarks=landmarks,
@@ -76,14 +96,20 @@ def main():
                 cv2.putText(frame,f'{display if t<display_until else "NONE"} | '+ '/'.join(h.pose for h in hands),
                             (20,35),cv2.FONT_HERSHEY_SIMPLEX,0.8,(0,255,255),2)
                 cv2.putText(frame,'Release hands between casts | Q: quit', (20,65),cv2.FONT_HERSHEY_SIMPLEX,0.55,(255,255,255),1)
-                cv2.imshow('ELEMENTAL BENDER - camera (unmirrored)',frame)
-                if cv2.waitKey(1)&0xff==ord('q') or (args.duration>0 and t>=args.duration):
+                delay=max(1,int((start+frame_index/fps-time.monotonic())*1000)) if args.video else 1
+                key=-1
+                if not args.no_preview:
+                    cv2.imshow('ELEMENTAL BENDER - input (unmirrored)',frame)
+                    key=cv2.waitKey(delay)&0xff
+                elif args.video:
+                    time.sleep(max(0,(start+frame_index/fps-time.monotonic())))
+                if key==ord('q') or (args.duration>0 and t>=args.duration):
                     break
     finally:
         if output: output.close()
         cap.release()
         cv2.destroyAllWindows()
-        sender.close()
+        if sender: sender.close()
 
 if __name__=='__main__':
     main()

@@ -62,7 +62,13 @@ public static class ElementalSmokeTest {
             var arena=UnityEngine.Object.FindFirstObjectByType<ElementalArena>();
             var text=UnityEngine.Object.FindFirstObjectByType<TMPro.TextMeshProUGUI>();
             if(!arena || !text || !text.text.Contains("EARTH")) {Finish(1,"HUD/arena missing");return;}
-            Finish(0,"PASS: Play-mode arena/HUD, four UDP casts, duplicate suppression, clean shutdown");
+            int opponents=0;
+            foreach(var obj in UnityEngine.Object.FindObjectsByType<Transform>(FindObjectsSortMode.None))
+                if(obj.name=="DuelEnemy") opponents++;
+            if(opponents!=1 || !text.text.Contains("Enemy HP 165")) {
+                Finish(1,"Expected one enemy with HP 165 after four skills: "+text.text);return;
+            }
+            Finish(0,"PASS: 1v1 arena/HUD, one opponent, four skills reduce HP 300 to 165, UDP duplicate suppression");
         }
     }
     static void Finish(int code,string message) {

@@ -119,7 +119,7 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &1887277483
+--- !u!1 &303923780
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -127,9 +127,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1887277486}
-  - component: {fileID: 1887277485}
-  - component: {fileID: 1887277484}
+  - component: {fileID: 303923783}
+  - component: {fileID: 303923782}
+  - component: {fileID: 303923781}
   m_Layer: 0
   m_Name: Elemental Bender
   m_TagString: Untagged
@@ -137,38 +137,38 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1887277484
+--- !u!114 &303923781
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1887277483}
+  m_GameObject: {fileID: 303923780}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 263498e749454de439e4a0b51c32d80a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ElementalArena
---- !u!114 &1887277485
+--- !u!114 &303923782
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1887277483}
+  m_GameObject: {fileID: 303923780}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a251005455867d84ba91096ef70c42c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ElementalReceiver
   port: 5055
---- !u!4 &1887277486
+--- !u!4 &303923783
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1887277483}
+  m_GameObject: {fileID: 303923780}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -181,4 +181,4 @@ Transform:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 1887277486}
+  - {fileID: 303923783}

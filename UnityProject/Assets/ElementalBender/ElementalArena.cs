@@ -6,13 +6,13 @@ using TMPro;
 public class ElementalArena : MonoBehaviour {
     class Enemy {
         public GameObject body;
-        public float hp = 100, slowUntil, stunUntil;
+        public float hp = 300, slowUntil, stunUntil, attackAt;
     }
     readonly List<Enemy> enemies = new List<Enemy>();
     readonly Dictionary<string,float> ready = new Dictionary<string,float>();
     ElementalReceiver receiver;
     TMP_Text hud;
-    float spawnAt, hp = 100, shieldUntil;
+    float hp = 100, shieldUntil;
     int kills;
     string lastSkill = "Ready";
     bool lost;
@@ -47,6 +47,9 @@ public class ElementalArena : MonoBehaviour {
         if (!hud.font && TMP_Settings.instance) hud.font=TMP_Settings.defaultFontAsset;
         if (!hud.font) hud.font=TMP_FontAsset.CreateFontAsset(Font.CreateDynamicFontFromOSFont("Arial",24));
         foreach(string element in new[]{"FIRE","WATER","AIR","EARTH"}) ready[element]=0;
+        var opponent=Visual(PrimitiveType.Cube,new Vector3(0,0.7f,6),new Vector3(1.4f,1.4f,1.4f),Color.red);
+        opponent.name="DuelEnemy";
+        enemies.Add(new Enemy {body=opponent});
     }
     GameObject Visual(PrimitiveType type,Vector3 pos,Vector3 scale,Color color,float lifetime=0) {
         var obj=GameObject.CreatePrimitive(type); obj.transform.position=pos; obj.transform.localScale=scale;
@@ -60,25 +63,21 @@ public class ElementalArena : MonoBehaviour {
         return obj;
     }
     void Update() {
-        if (!lost && Time.time>=spawnAt && enemies.Count<8) {
-            spawnAt=Time.time+2.5f;
-            enemies.Add(new Enemy {body=Visual(PrimitiveType.Cube,new Vector3(Random.Range(-3.5f,3.5f),0.5f,10),Vector3.one,Color.red)});
-        }
         for(int i=enemies.Count-1;i>=0;i--) {
             var e=enemies[i];
             if(lost) continue;
             if(Time.time>=e.stunUntil) e.body.transform.position=Vector3.MoveTowards(e.body.transform.position,
                 new Vector3(0,0.5f,0),Time.deltaTime*(Time.time<e.slowUntil?0.3f:0.9f));
-            if(e.body.transform.position.z<0.7f) {
+            if(e.body.transform.position.z<0.7f && Time.time>=e.attackAt && Time.time>=e.stunUntil) {
+                e.attackAt=Time.time+2;
                 if(Time.time>shieldUntil) hp=Mathf.Max(0,hp-10);
-                Destroy(e.body); enemies.RemoveAt(i);
                 if(hp<=0) lost=true;
             }
         }
-        if(hud) hud.text="ELEMENTAL BENDER   HP "+hp+"   Defeated "+kills+"\n"+
+        if(hud) hud.text="ELEMENTAL BENDER - 1 vs 1   Player HP "+hp+"   Enemy HP "+(enemies.Count>0?enemies[0].hp:0)+"\n"+
             (receiver.Connected?receiver.Status+" | transit "+receiver.LastTransitMs.ToString("F0")+" ms":receiver.Status+" (no recent signal)")+"\n"+
             "Last: "+lastSkill+"   Shield: "+Mathf.Max(0,shieldUntil-Time.time).ToString("F1")+"s\n"+
-            Cooldowns()+"\n"+(lost?"GAME OVER - stop and play again":"Release hands briefly between gestures");
+            Cooldowns()+"\n"+(lost?"DEFEAT - stop and play again":kills>0?"VICTORY - stop and play again":"Release hands briefly between gestures");
     }
     string Cooldowns() {
         string text="";
@@ -86,7 +85,7 @@ public class ElementalArena : MonoBehaviour {
         return text;
     }
     void Cast(string element) {
-        if(lost || !ready.ContainsKey(element) || Time.time<ready[element]) return;
+        if(lost || kills>0 || !ready.ContainsKey(element) || Time.time<ready[element]) return;
         ready[element]=Time.time+(element=="EARTH"?4:1.5f);
         lastSkill=element;
         Color color=element=="FIRE"?new Color(1,0.3f,0):element=="WATER"?Color.cyan:element=="AIR"?Color.white:new Color(0.5f,0.3f,0.1f);
