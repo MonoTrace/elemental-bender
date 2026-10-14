@@ -17,3 +17,5 @@ UnityProject/.vs/
 UnityProject/*.csproj
 UnityProject/*.sln
 UnityProject/*.slnx
+UnityProject/Assets/LocalCaptures/
+UnityProject/Assets/LocalCaptures.meta

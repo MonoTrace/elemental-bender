@@ -60,7 +60,8 @@ public static class ElementalSmokeTest {
         if(phase==4 && Time.time>7) {
             if(casts!=4) {Finish(1,"Expected 4 casts, got "+casts);return;}
             var arena=UnityEngine.Object.FindFirstObjectByType<ElementalArena>();
-            var text=UnityEngine.Object.FindFirstObjectByType<TMPro.TextMeshProUGUI>();
+            var presentation=UnityEngine.Object.FindFirstObjectByType<BattlePresentation>();
+            var text=presentation?presentation.Status:null;
             if(!arena || !text || !text.text.Contains("EARTH")) {Finish(1,"HUD/arena missing");return;}
             int opponents=0;
             foreach(var obj in UnityEngine.Object.FindObjectsByType<Transform>(FindObjectsSortMode.None))

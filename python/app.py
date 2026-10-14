@@ -5,6 +5,7 @@ import time
 import urllib.request
 from gestures import Recognizer, hand_features
 from transport import Sender
+from preview_stream import PreviewStream
 
 MODEL_URL = 'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task'
 
@@ -15,6 +16,8 @@ def main():
     p.add_argument('--no-udp',action='store_true',help='Inspect recognition without sending game input')
     p.add_argument('--no-preview',action='store_true',help='Run without the video window')
     p.add_argument('--no-mirror-preview',action='store_true',help='Disable mirrored webcam preview (recognition coordinates stay unchanged)')
+    p.add_argument('--preview-port',type=int,default=5056)
+    p.add_argument('--no-unity-preview',action='store_true',help='Disable the local Unity image bridge')
     p.add_argument('--host',default='127.0.0.1')
     p.add_argument('--port',type=int,default=5055)
     p.add_argument('--record',help='Save one labelled trial as JSONL (landmarks, no video)')
@@ -49,11 +52,18 @@ def main():
         raise RuntimeError('Video frame rate unavailable. Export the clip as constant-rate MP4.')
     sender, recognizer = (None if args.no_udp else Sender(args.host,args.port)), Recognizer()
     output = None
+    stream = None
     start = time.monotonic()
     last_ms, display, display_until = -1,'NONE',0
     frame_index, last_status, last_log = 0,None,-100
     print('INPUT: '+(args.video or f'camera {args.camera}')+' | Q: quit',flush=True)
     try:
+        if not args.no_unity_preview:
+            try:
+                stream=PreviewStream(args.preview_port)
+                print(f'Unity preview: http://127.0.0.1:{args.preview_port}/frame.jpg',flush=True)
+            except OSError as error:
+                print(f'Unity preview unavailable: {error}. Recognition remains active.',flush=True)
         if args.record:
             path = Path(args.record)
             path.parent.mkdir(parents=True,exist_ok=True)
@@ -101,6 +111,7 @@ def main():
                 cv2.putText(frame,f'{display if t<display_until else "NONE"} | '+ '/'.join(h.pose for h in hands),
                             (20,35),cv2.FONT_HERSHEY_SIMPLEX,0.8,(0,255,255),2)
                 cv2.putText(frame,'Release hands between casts | Q: quit', (20,65),cv2.FONT_HERSHEY_SIMPLEX,0.55,(255,255,255),1)
+                if stream: stream.publish(frame)
                 delay=max(1,int((start+frame_index/fps-time.monotonic())*1000)) if args.video else 1
                 key=-1
                 if not args.no_preview:
@@ -115,6 +126,7 @@ def main():
         cap.release()
         cv2.destroyAllWindows()
         if sender: sender.close()
+        if stream: stream.close()
 
 if __name__=='__main__':
     main()
