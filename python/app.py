@@ -14,6 +14,7 @@ def main():
     p.add_argument('--video',help='Read a phone-recorded video instead of a webcam')
     p.add_argument('--no-udp',action='store_true',help='Inspect recognition without sending game input')
     p.add_argument('--no-preview',action='store_true',help='Run without the video window')
+    p.add_argument('--no-mirror-preview',action='store_true',help='Disable mirrored webcam preview (recognition coordinates stay unchanged)')
     p.add_argument('--host',default='127.0.0.1')
     p.add_argument('--port',type=int,default=5055)
     p.add_argument('--record',help='Save one labelled trial as JSONL (landmarks, no video)')
@@ -93,13 +94,17 @@ def main():
                 for hand in landmarks:
                     for x,y,_ in hand:
                         cv2.circle(frame,(int(x*frame.shape[1]),int(y*frame.shape[0])),3,(0,255,180),-1)
+                # Mirror the webcam display and landmark overlay together; keep original
+                # coordinates for recognition/recordings and draw readable text afterwards.
+                if not args.video and not args.no_mirror_preview:
+                    frame=cv2.flip(frame,1)
                 cv2.putText(frame,f'{display if t<display_until else "NONE"} | '+ '/'.join(h.pose for h in hands),
                             (20,35),cv2.FONT_HERSHEY_SIMPLEX,0.8,(0,255,255),2)
                 cv2.putText(frame,'Release hands between casts | Q: quit', (20,65),cv2.FONT_HERSHEY_SIMPLEX,0.55,(255,255,255),1)
                 delay=max(1,int((start+frame_index/fps-time.monotonic())*1000)) if args.video else 1
                 key=-1
                 if not args.no_preview:
-                    cv2.imshow('ELEMENTAL BENDER - input (unmirrored)',frame)
+                    cv2.imshow('ELEMENTAL BENDER - input',frame)
                     key=cv2.waitKey(delay)&0xff
                 elif args.video:
                     time.sleep(max(0,(start+frame_index/fps-time.monotonic())))
