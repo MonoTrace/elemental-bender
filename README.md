@@ -67,7 +67,7 @@ Unity에서 Play 후 오른쪽 위 **WEBCAM: ON / OFF** 버튼으로 미리보�
 
 `run-unity-camera.ps1`은 별도 OpenCV 창 없이 실행합니다. 기존 `run-camera.ps1`은 별도 창도 함께 표시합니다. HTTP 기능을 끄려면 Python에 `--no-unity-preview`를 전달하세요. 충돌 시 `--preview-port`와 Unity의 WebcamPreview `Frame Url` 포트를 함께 바꾸세요. 프레임은 기본적으로 메모리에만 보관하고 서버는 `127.0.0.1`에만 바인딩합니다. 미리보기는 Unity Editor/같은 PC 데스크톱 실행 기준입니다. 배포 빌드에서 HTTP 정책에 막히면 localhost HTTP 허용 여부를 따로 확인해야 합니다.
 
-사람 모델은 지금 도형을 조합한 임시 외형입니다. 실제 모델을 사용할 때는 ElementalArena의 `Player Model Prefab` / `Enemy Model Prefab`에 캐릭터 프리팹을 연결하면 됩니다. 바닥이 원점이고 앞 방향이 +Z인 프리팹을 준비하세요. 자동 애니메이션/리타게팅은 아직 구현하지 않았습니다.
+현재 플레이어는 사용자 제공 **Y Bot**, 적은 **X Bot** 모델입니다. `Assets/ElementalBender/Characters/YBot.prefab`과 `XBot.prefab`이 ElementalArena의 `Player Model Prefab` / `Enemy Model Prefab`에 연결되어 있습니다. 각 모델의 Humanoid Avatar와 `Animations/YBotIdle.controller` / `XBotIdle.controller`를 통해 제공된 Idle을 반복 재생하며 Root Motion은 끕니다. 데모 씬 생성 메뉴에서도 해당 프리팹을 다시 연결합니다. 공격·방어·피격 애니메이션은 아직 연결하지 않았습니다.
 
 ## 웹캠 없이 실제 손동작 로그 보기
 

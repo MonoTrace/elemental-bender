@@ -149,6 +149,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 263498e749454de439e4a0b51c32d80a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ElementalArena
+  playerModelPrefab: {fileID: 7085629508615500714, guid: 762d6d4e17207e244bc0e20441ed3d12, type: 3}
+  enemyModelPrefab: {fileID: 8689518375539763933, guid: c4bb5b73b613be54382d8a859cde0321, type: 3}
+  fixedDuelStaging: 1
 --- !u!114 &303923782
 MonoBehaviour:
   m_ObjectHideFlags: 0

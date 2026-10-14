@@ -15,7 +15,10 @@ public static class CreateDemoScene {
             AssetDatabase.Refresh();
         }
         EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
-        new GameObject("Elemental Bender",typeof(ElementalReceiver),typeof(ElementalArena));
+        var demo=new GameObject("Elemental Bender",typeof(ElementalReceiver),typeof(ElementalArena));
+        var arena=demo.GetComponent<ElementalArena>();
+        arena.playerModelPrefab=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/ElementalBender/Characters/YBot.prefab");
+        arena.enemyModelPrefab=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/ElementalBender/Characters/XBot.prefab");
         System.IO.Directory.CreateDirectory("Assets/Scenes");
         EditorSceneManager.SaveScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene(),"Assets/Scenes/ElementalDemo.unity");
         EditorBuildSettings.scenes=new[]{new EditorBuildSettingsScene("Assets/Scenes/ElementalDemo.unity",true)};
