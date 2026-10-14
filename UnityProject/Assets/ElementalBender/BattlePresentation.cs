@@ -14,7 +14,7 @@ public class BattlePresentation : MonoBehaviour {
         cam.transform.position=new Vector3(-1.6892796f,1.7757857f,-1.1559143f);
         cam.transform.rotation=new Quaternion(.030648912f,.21299562f,-.006684841f,.9765495f);
         cam.transform.localScale=Vector3.one;
-        cam.orthographic=true;cam.orthographicSize=3.8f;
+        cam.orthographic=false;
         cam.rect=new Rect(0,.23f,1,.77f);
         cam.backgroundColor=new Color(.12f,.17f,.24f);
         var canvas=new GameObject("BattleHUD",typeof(Canvas),typeof(UnityEngine.UI.CanvasScaler),typeof(UnityEngine.UI.GraphicRaycaster));
