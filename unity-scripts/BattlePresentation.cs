@@ -11,8 +11,9 @@ public class BattlePresentation : MonoBehaviour {
 
     public void Build(Camera cam) {
         // Rear-left player, front-right opponent; fixed diagonal 3D battle view.
-        cam.transform.position=new Vector3(6,9,-12);
-        cam.transform.LookAt(new Vector3(0,.9f,3));
+        cam.transform.position=new Vector3(-1.6892796f,1.7757857f,-1.1559143f);
+        cam.transform.rotation=new Quaternion(.030648912f,.21299562f,-.006684841f,.9765495f);
+        cam.transform.localScale=Vector3.one;
         cam.orthographic=true;cam.orthographicSize=3.8f;
         cam.rect=new Rect(0,.23f,1,.77f);
         cam.backgroundColor=new Color(.12f,.17f,.24f);
