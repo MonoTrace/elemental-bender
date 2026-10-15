@@ -9,6 +9,22 @@ from gestures import Hand, Recognizer, hand_features
 from transport import Sender
 
 class GestureTests(unittest.TestCase):
+    def test_single_v_hold_casts_once_and_rearms(self):
+        r=Recognizer()
+        hand=Hand(.5,.5,.1,'V')
+        events=[r.update(k/30,[hand]) for k in range(60)]
+        self.assertEqual(events.count('WATER'),1)
+        self.assertTrue(all(e=='NONE' for e in events[:11]))
+        r.update(2.1,[]); r.update(2.4,[])
+        events=[r.update(2.5+k/30,[hand]) for k in range(20)]
+        self.assertEqual(events.count('WATER'),1)
+    def test_v_interruption_resets_hold(self):
+        r=Recognizer()
+        hand=Hand(.5,.5,.1,'V')
+        for k in range(6): self.assertEqual(r.update(k/30,[hand]),'NONE')
+        r.update(.2,[])
+        for k in range(6): self.assertEqual(r.update(.3+k/30,[hand]),'NONE')
+        self.assertEqual(r.update(1,[hand]),'NONE')
     def trajectory(self,label):
         r=Recognizer()
         events=[]

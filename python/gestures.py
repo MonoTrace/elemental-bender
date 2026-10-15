@@ -20,13 +20,15 @@ def hand_features(points, aspect=1.0):
                           points[a][1]-points[b][1])
     size = max(distance(0, 9), 0.001)
     # Four non-thumb fingers: orientation-independent joint angle + tip reach.
-    extended = 0
+    fingers = []
     for mcp, pip, tip in ((5,6,8), (9,10,12), (13,14,16), (17,18,20)):
         a = ((points[mcp][0]-points[pip][0])*aspect, points[mcp][1]-points[pip][1])
         b = ((points[tip][0]-points[pip][0])*aspect, points[tip][1]-points[pip][1])
         cosine = sum(x*y for x,y in zip(a,b)) / max(math.hypot(*a)*math.hypot(*b), 1e-9)
-        extended += cosine < -0.65 and distance(0,tip) > distance(0,pip)*1.12
-    pose = 'OPEN' if extended >= 3 else 'FIST' if extended == 0 else 'OTHER'
+        fingers.append(cosine < -0.65 and distance(0,tip) > distance(0,pip)*1.12)
+    extended = sum(fingers)
+    peace = fingers == [True,True,False,False] and distance(8,12) > size*0.4
+    pose = 'V' if peace else 'OPEN' if extended >= 3 else 'FIST' if extended == 0 else 'OTHER'
     ids = (0,5,9,13,17)
     return Hand(sum(points[i][0] for i in ids)/5,
                 sum(points[i][1] for i in ids)/5, size, pose)
@@ -39,8 +41,25 @@ class Recognizer:
         self.pose = None
         self.neutral_since = None
         self.armed = True
+        self.v_since = None
+        self.v_last = None
 
     def update(self, t, hands):
+        # Temporary shortcut: exactly one V hand, with or without a second hand.
+        if sum(h.pose == 'V' for h in hands) == 1:
+            self.history.clear()
+            self.pose = None
+            self.neutral_since = None
+            if self.v_since is None or t-self.v_last > 0.2:
+                self.v_since = t
+            self.v_last = t
+            if self.armed and t-self.v_since >= 0.35 and t-self.last_fire >= self.cooldown:
+                self.last_fire = t
+                self.armed = False
+                return 'WATER'
+            return 'NONE'
+        self.v_since = None
+        self.v_last = None
         valid = len(hands)==2 and hands[0].pose==hands[1].pose and hands[0].pose in ('FIST','OPEN')
         if not valid:
             self.history.clear()
