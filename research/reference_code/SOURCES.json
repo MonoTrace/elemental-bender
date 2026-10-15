@@ -1,0 +1,50 @@
+[
+  {
+    "repository": "google-ai-edge/mediapipe-samples",
+    "commit": "9cabe32bfdd0a7457e2cb1d2f29ffcf7dc24195f",
+    "original_path": "examples/hand_landmarker/python/hand_landmarker.ipynb",
+    "local_path": "research/reference_code/mediapipe-samples/hand_landmarker.ipynb",
+    "url": "https://github.com/google-ai-edge/mediapipe-samples/blob/9cabe32bfdd0a7457e2cb1d2f29ffcf7dc24195f/examples/hand_landmarker/python/hand_landmarker.ipynb",
+    "sha256": "4eb2d03bcef3ba321359acabb875a7137928276e03c66d3075b55bed905f0599"
+  },
+  {
+    "repository": "google-ai-edge/mediapipe-samples",
+    "commit": "9cabe32bfdd0a7457e2cb1d2f29ffcf7dc24195f",
+    "original_path": "LICENSE",
+    "local_path": "research/reference_code/mediapipe-samples/LICENSE",
+    "url": "https://github.com/google-ai-edge/mediapipe-samples/blob/9cabe32bfdd0a7457e2cb1d2f29ffcf7dc24195f/LICENSE",
+    "sha256": "e2d17c15aaea3a55ff77279e3d895dcbd68baa1b128e4ac9086126ab1d7235f6"
+  },
+  {
+    "repository": "kinivi/hand-gesture-recognition-mediapipe",
+    "commit": "0e737bb8c45ea03f6fafb1f5dbfe9246c34a8003",
+    "original_path": "app.py",
+    "local_path": "research/reference_code/hand-gesture-recognition-mediapipe/app.py",
+    "url": "https://github.com/kinivi/hand-gesture-recognition-mediapipe/blob/0e737bb8c45ea03f6fafb1f5dbfe9246c34a8003/app.py",
+    "sha256": "3c6e164d0f71ac50d7fd117cc50ca6832a3378b2000b210cfde87b904060691d"
+  },
+  {
+    "repository": "kinivi/hand-gesture-recognition-mediapipe",
+    "commit": "0e737bb8c45ea03f6fafb1f5dbfe9246c34a8003",
+    "original_path": "LICENSE",
+    "local_path": "research/reference_code/hand-gesture-recognition-mediapipe/LICENSE",
+    "url": "https://github.com/kinivi/hand-gesture-recognition-mediapipe/blob/0e737bb8c45ea03f6fafb1f5dbfe9246c34a8003/LICENSE",
+    "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+  },
+  {
+    "repository": "kinivi/hand-gesture-recognition-mediapipe",
+    "commit": "0e737bb8c45ea03f6fafb1f5dbfe9246c34a8003",
+    "original_path": "keypoint_classification.ipynb",
+    "local_path": "research/reference_code/hand-gesture-recognition-mediapipe/keypoint_classification.ipynb",
+    "url": "https://github.com/kinivi/hand-gesture-recognition-mediapipe/blob/0e737bb8c45ea03f6fafb1f5dbfe9246c34a8003/keypoint_classification.ipynb",
+    "sha256": "c54976ca7b8d0b4a631a51aec0049c8075f8f311d193af40b75f70de73ca4608"
+  },
+  {
+    "repository": "kinivi/hand-gesture-recognition-mediapipe",
+    "commit": "0e737bb8c45ea03f6fafb1f5dbfe9246c34a8003",
+    "original_path": "point_history_classification.ipynb",
+    "local_path": "research/reference_code/hand-gesture-recognition-mediapipe/point_history_classification.ipynb",
+    "url": "https://github.com/kinivi/hand-gesture-recognition-mediapipe/blob/0e737bb8c45ea03f6fafb1f5dbfe9246c34a8003/point_history_classification.ipynb",
+    "sha256": "f68a882a375a1592317c00ce8f72259dca56206f64a7c8fd9e8eab84ac64c9bd"
+  }
+]

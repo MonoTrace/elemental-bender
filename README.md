@@ -4,6 +4,15 @@
 
 Windows 데스크톱, 단일 플레이어, 고정 카메라, 같은 PC의 Python/Unity를 대상으로 하는 실행 가능한 MVP입니다. 자체 제스처 학습 모델은 아직 없으며 MediaPipe의 사전학습 손 추정 모델 위에 규칙 기반 분류기를 얹습니다. 온라인 서비스/유료 에셋은 필요하지 않습니다. `sources/`의 참고 자료는 수정하지 않았습니다.
 
+## 10월 16일 조사·계획 발표 자료
+
+2조 송기훈·최원제의 발표 자료입니다. 공개 데이터셋은 조사 단계이며, 구현 완료 항목과 추가 구현 계획을 구분했습니다.
+
+- [발표 PDF](submission/ELEMENTAL_BENDER_2026-10-16_발표본.pdf) / [수정 가능한 PowerPoint](submission/ELEMENTAL_BENDER_2026-10-16_발표본.pptx)
+- [데이터셋·참조 코드·AI 모델 조사](research/DATASETS_AND_CODE.md)
+- [라이선스를 포함한 참조 코드 원본](research/reference_code/README.md)
+- [발표자 노트](submission/발표자_노트.md) / [제출 안내](submission/SUBMISSION_CHECKLIST.md)
+
 ## 빠른 실행
 
 이 폴더를 PowerShell에서 연 뒤 진행합니다. Python 3.12 64비트와 Unity가 필요합니다. 이 컴퓨터에는 `.venv` 설치와 Unity 6000.6.3f1용 `UnityProject` 생성까지 진행했습니다. 다른 PC에서는 Python 설치 시 Python launcher도 설치하세요.

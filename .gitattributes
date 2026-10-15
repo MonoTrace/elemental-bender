@@ -1,0 +1,4 @@
+*.pdf binary
+*.pptx binary
+# Preserve upstream snapshots byte-for-byte for SOURCES.json checksums.
+research/reference_code/** -text
